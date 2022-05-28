@@ -1,9 +1,9 @@
 [
-    {"name":"Isaac", "location":"https://rest.cozi.com/api/ext/1103/c8bb7533-fbe5-4db8-975f-f7b16a681888/icalendar/feed/feed.ics"},
-    {"name":"Kateshia", "location":"https://rest.cozi.com/api/ext/1103/b4c67d49-dc7c-40bd-84a6-276473c91584/icalendar/feed/feed.ics"},
-    {"name":"Asharia", "location":"https://rest.cozi.com/api/ext/1103/0f7876ea-9375-44f9-8f1f-febb17d9b007/icalendar/feed/feed.ics"},
-    {"name":"Ikey", "location":"https://rest.cozi.com/api/ext/1103/1ae5172b-7a94-4919-9df2-1108e89abf94/icalendar/feed/feed.ics"},
-    {"name":"2013 Boys Select", "location":"http://ical-cdn.teamsnap.com/team_schedule/3b1e73d1-4cda-49d0-b33e-3a3dd306d597.ics"},
-    {"name":"NW Elite FC", "location":"http://ical-cdn.teamsnap.com/team_schedule/ffc9ec9d-505d-4129-be89-17c4381c0a97.ics"},
-    {"name":"PDX United Games", "location":"http://oysa.affinitysoccer.com/tour/public/info/ischedule.aspx?flightguid=B38BD972-A335-421B-A9EF-59CC8217494D&tournamentguid=C37DE869-A1EA-4980-84B9-5734171D6171&tourappguid=B41FB9F4-07D9-46FD-8143-A972FC33AE4D&gametimezone=pacific"}
+    {"owner":"isaac", "name":"Isaac", "location":"https://rest.cozi.com/api/ext/1103/c8bb7533-fbe5-4db8-975f-f7b16a681888/icalendar/feed/feed.ics"},
+    {"owner":"kateshia", "name":"Kateshia", "location":"https://rest.cozi.com/api/ext/1103/b4c67d49-dc7c-40bd-84a6-276473c91584/icalendar/feed/feed.ics"},
+    {"owner":"asharia", "name":"Asharia", "location":"https://rest.cozi.com/api/ext/1103/0f7876ea-9375-44f9-8f1f-febb17d9b007/icalendar/feed/feed.ics"},
+    {"owner":"ikey", "name":"Ikey", "location":"https://rest.cozi.com/api/ext/1103/1ae5172b-7a94-4919-9df2-1108e89abf94/icalendar/feed/feed.ics"},
+    {"owner":"ikey", "name":"2013 Boys Select", "location":"http://ical-cdn.teamsnap.com/team_schedule/3b1e73d1-4cda-49d0-b33e-3a3dd306d597.ics"},
+    {"owner":"asharia", "name":"NW Elite FC", "location":"http://ical-cdn.teamsnap.com/team_schedule/ffc9ec9d-505d-4129-be89-17c4381c0a97.ics"},
+    {"owner":"ikey", "name":"United PDX", "location":"http://ical-cdn.teamsnap.com/team_schedule/5e751792-9d4c-4a55-8768-a0f21308baf4.ics"}
 ]

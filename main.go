@@ -15,7 +15,7 @@ import (
 
 func main() {
 
-	re := regexp.MustCompile(`(?P<year>[0-9]{4})(?P<month>[0-9]{2})(?P<date>[0-9]{2})T(?P<hour>[0-9]{2})(?P<minute>[0-9]{2})(?P<second>[0-9]{2})Z?`)
+	re := regexp.MustCompile(`(?P<year>[0-9]{4})(?P<month>[0-1]{1}[0-9]{1})(?P<date>[0-3]{1}[0-9]{1})`)
 	calendars := make([]calendar.Calendar, 0)
 	jsonFile, err := os.Open("calendars.json")
 	if err != nil {

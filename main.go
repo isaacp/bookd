@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"regexp"
@@ -15,7 +15,7 @@ import (
 
 func main() {
 
-	re := regexp.MustCompile(`(?P<year>[0-9]{4})(?P<month>[0-1]{1}[0-9]{1})(?P<date>[0-3]{1}[0-9]{1})`)
+	re := regexp.MustCompile(`(?P<year>[0-9]{4})(?P<month>[0-1]{1}[0-9]{1})(?P<date>[0-3]{1}[0-9]{1})T(?P<hour>[0-5]{1}[0-9]{1})(?P<minute>[0-5]{1}[0-9]{1})(?P<seconds>[0-5]{1}[0-9]{1})`)
 	calendars := make([]calendar.Calendar, 0)
 	jsonFile, err := os.Open("calendars.json")
 	if err != nil {
@@ -23,7 +23,7 @@ func main() {
 	}
 	defer jsonFile.Close()
 
-	bytes, _ := ioutil.ReadAll(jsonFile)
+	bytes, _ := io.ReadAll(jsonFile)
 
 	err = json.Unmarshal(bytes, &calendars)
 	if err != nil {
@@ -36,7 +36,7 @@ func main() {
 			fmt.Println(err)
 		}
 
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -51,6 +51,9 @@ func main() {
 		fmt.Println(c.Name)
 		for _, event := range c.Data.Events() {
 			start := event.GetProperty(ics.ComponentPropertyDtStart).Value
+			if re.FindAllStringSubmatch(start, -1) != nil {
+				fmt.Println("Okay, now we're talking!")
+			}
 			end := event.GetProperty(ics.ComponentPropertyDtEnd).Value
 
 			fmt.Println(re.FindStringSubmatch(start))

@@ -14,6 +14,7 @@ type (
 		Id           string    `json:"id"`
 		Start        time.Time `json:"start"`
 		End          time.Time `json:"end"`
+		Status       string    `json:"status"`
 		Summary      string    `json:"summary"`
 		Location     string    `json:"location"`
 		LastModified string    `json:"last_modified"`
@@ -25,9 +26,17 @@ func Convert(ve *ics.VEvent) Event {
 		Id:           getProperty(ve, ics.ComponentPropertyUniqueId),
 		Start:        getTime(getProperty(ve, ics.ComponentPropertyDtStart)),
 		End:          getTime(getProperty(ve, ics.ComponentPropertyDtEnd)),
+		Status:       getProperty(ve, ics.ComponentPropertyStatus),
 		Summary:      getProperty(ve, ics.ComponentPropertySummary),
 		Location:     getProperty(ve, ics.ComponentPropertyLocation),
 		LastModified: getProperty(ve, ics.ComponentPropertyLastModified),
+	}
+}
+
+func (event Event) Interval() Interval {
+	return Interval{
+		Begin: event.Start,
+		End:   event.End,
 	}
 }
 

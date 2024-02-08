@@ -3,6 +3,8 @@ github.com/arran4/golang-ical v0.0.0-20220219120039-260d47eb161e/go.mod h1:BSTTr
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/isaacp/collections v0.0.0-20230621065110-32499bb0dcc0 h1:g2qESkzAeqTZFsj0t5DhoBGkGur0bDaxRHwlKHdjWi0=
+github.com/isaacp/collections v0.0.0-20230621065110-32499bb0dcc0/go.mod h1:brpEqVgCghcd2DCRxN/n6upw7/VuTsIDwsKW/2v3eng=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
 github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=

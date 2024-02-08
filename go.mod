@@ -1,8 +1,8 @@
 module github.com/isaacp/bookd
 
-go 1.17
+go 1.21
 
 require (
-	github.com/arran4/golang-ical v0.0.0-20220219120039-260d47eb161e // indirect
-	github.com/isaacp/collections v0.0.0-20230621065110-32499bb0dcc0 // indirect
+	github.com/arran4/golang-ical v0.2.4
+	github.com/isaacp/collections v0.0.0-20240208030509-6506ceb84087
 )

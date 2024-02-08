@@ -4,8 +4,8 @@ import "time"
 
 type (
 	Interval struct {
-		Begin time.Time
-		End   time.Time
+		Begin time.Time `json:"begin"`
+		End   time.Time `json:"end"`
 	}
 )
 

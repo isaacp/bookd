@@ -21,7 +21,7 @@ func main() {
 
 	events := make([]entities.Event, 0)
 
-	begin := time.Date(2024, 1, 5, 0, 0, 0, 0, time.Now().Location())
+	begin := time.Date(2024, 2, 7, 0, 0, 0, 0, time.Now().Location())
 	end := time.Date(2024, 2, 8, 0, 0, 0, 0, time.Now().Location())
 
 	for _, c := range calendars {
@@ -40,7 +40,7 @@ func main() {
 	intervals := stack.NewStack[entities.Interval]()
 
 	for _, event := range events {
-		fmt.Printf("%s: %s - %s \n", event.Start, event.Status, event.Summary)
+		fmt.Printf("%s: %s \n", event.Start, event.Summary)
 		if intervals.IsEmpty() {
 			intervals.Push(event.Interval())
 			continue
@@ -56,11 +56,30 @@ func main() {
 		}
 	}
 
+	start := begin
+	finish := end
+	freeIntervals := make([]entities.Interval, 0)
+	intervalSlice := intervals.ToSlice()
+	for index, interval := range intervalSlice {
+		freeIntervals = append(freeIntervals, entities.Interval{
+			Begin: start,
+			End:   interval.Begin,
+		})
+
+		if index == len(intervalSlice)-1 {
+			freeIntervals = append(freeIntervals, entities.Interval{
+				Begin: interval.End,
+				End:   finish,
+			})
+		} else {
+			start = interval.End
+		}
+	}
+
 	fmt.Printf("Height: %d\n", intervals.Height())
 
-	for !intervals.IsEmpty() {
-		p, _ := intervals.Pop()
-		fmt.Println(p)
+	for i := 0; i < len(freeIntervals); i++ {
+		fmt.Println(freeIntervals[i])
 	}
 }
 

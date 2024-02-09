@@ -1,103 +1,46 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io"
-	"log"
+	"net/http"
 	"os"
-	"sort"
-	"strings"
-	"time"
 
-	"github.com/isaacp/bookd/entities"
-	"github.com/isaacp/collections/stack"
+	"github.com/gin-gonic/gin"
+	"github.com/isaacp/bookd/routes"
 )
 
 func main() {
-	calendars := make([]entities.Calendar, 0)
-	inflateCalendars("calendars.json", &calendars)
-	eventFilter := make(map[string]bool)
+	os.Setenv("PORT", "8080")
 
-	events := make([]entities.Event, 0)
+	r := gin.Default()
+	public := r.Group("/api")
 
-	begin := time.Date(2024, 2, 7, 0, 0, 0, 0, time.Now().Location())
-	end := time.Date(2024, 2, 8, 0, 0, 0, 0, time.Now().Location())
+	public.GET("/", version)
 
-	for _, c := range calendars {
-		for _, event := range c.Events {
-			if !strings.Contains(strings.ToLower(event.Summary), "[canceled]") && !eventFilter[event.Id] && ((event.Start.After(begin) && event.Start.Before(end)) || (event.Start.Before(begin) && event.End.After(begin)) || (event.Start.Before(end) && event.End.After(end))) {
-				events = append(events, *event)
-				eventFilter[event.Id] = true
+	initializePaths(public, routes.Availbility)
+	initializePaths(public, routes.Events)
+
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+func initializePaths(group *gin.RouterGroup, routes map[string]map[string]func(c *gin.Context)) {
+	for path, content := range routes {
+		for verb, function := range content {
+			switch verb {
+			case "DELETE":
+				group.DELETE(path, function)
+			case "GET":
+				group.GET(path, function)
+			case "PATCH":
+				group.PATCH(path, function)
+			case "POST":
+				group.POST(path, function)
+			case "PUT":
+				group.PUT(path, function)
 			}
 		}
 	}
-
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].Start.Before(events[j].Start)
-	})
-
-	intervals := stack.NewStack[entities.Interval]()
-
-	for _, event := range events {
-		fmt.Printf("%s: %s \n", event.Start, event.Summary)
-		if intervals.IsEmpty() {
-			intervals.Push(event.Interval())
-			continue
-		}
-
-		top, _ := intervals.Peek()
-		if event.Interval().Overlapping(*top) {
-			merged := event.Interval().MergeWith(*top)
-			intervals.Pop()
-			intervals.Push(merged)
-		} else {
-			intervals.Push(event.Interval())
-		}
-	}
-
-	start := begin
-	finish := end
-	freeIntervals := make([]entities.Interval, 0)
-	intervalSlice := intervals.ToSlice()
-	for index, interval := range intervalSlice {
-		freeIntervals = append(freeIntervals, entities.Interval{
-			Begin: start,
-			End:   interval.Begin,
-		})
-
-		if index == len(intervalSlice)-1 {
-			freeIntervals = append(freeIntervals, entities.Interval{
-				Begin: interval.End,
-				End:   finish,
-			})
-		} else {
-			start = interval.End
-		}
-	}
-
-	fmt.Printf("Height: %d\n", intervals.Height())
-
-	for i := 0; i < len(freeIntervals); i++ {
-		fmt.Println(freeIntervals[i])
-	}
 }
 
-func inflateCalendars(file string, calendars *[]entities.Calendar) {
-	jsonFile, err := os.Open(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer jsonFile.Close()
-
-	bytes, _ := io.ReadAll(jsonFile)
-
-	err = json.Unmarshal(bytes, calendars)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for index, calendar := range *calendars {
-		(*calendars)[index] = *calendar.Process()
-	}
+func version(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, `v0.1`)
 }

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<head>
+
+</head>
+<body>
+<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+<!-- have a button POST a click via AJAX -->
+<button hx-get="http://localhost:8080/api/availabilty" hx-swap="outerHTML">
+    Click Me
+  </button>
+</body>

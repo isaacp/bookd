@@ -2,6 +2,7 @@ package events
 
 import (
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 
@@ -28,5 +29,10 @@ func List(c *gin.Context) {
 			}
 		}
 	}
+
+	sort.Slice(events, func(i, j int) bool {
+		return events[i].Start.Before(events[j].Start)
+	})
+
 	c.JSON(http.StatusOK, events)
 }

@@ -1,7 +1,6 @@
 package availability
 
 import (
-	"fmt"
 	"net/http"
 	"sort"
 	"strings"
@@ -20,7 +19,6 @@ func List(c *gin.Context) {
 
 	events := make([]entities.Event, 0)
 
-	fmt.Println(c.Query("start"))
 	begin, _ := time.Parse(time.RFC3339, c.Query("start"))
 	end, _ := time.Parse(time.RFC3339, c.Query("end"))
 
@@ -40,7 +38,6 @@ func List(c *gin.Context) {
 	intervals := stack.NewStack[entities.Interval]()
 
 	for _, event := range events {
-		fmt.Printf("%s: %s \n", event.Start, event.Summary)
 		if intervals.IsEmpty() {
 			intervals.Push(event.Interval())
 			continue
@@ -75,10 +72,6 @@ func List(c *gin.Context) {
 		} else {
 			start = interval.End
 		}
-	}
-
-	for i := 0; i < len(freeIntervals); i++ {
-		fmt.Println(freeIntervals[i])
 	}
 
 	c.JSON(http.StatusOK, freeIntervals)

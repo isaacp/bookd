@@ -4,8 +4,14 @@
 </head>
 <body>
 <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+<input type="text"></input>
+<input type="text"></input>
 <!-- have a button POST a click via AJAX -->
-<button hx-get="http://localhost:8080/api/events?start=2024-02-10T00:00:00-08:00&end=2024-02-11T00:00:00-08:00" hx-swap="outerHTML">
-    Click Me
+  <button hx-get="https://api-bikzyn25da-uw.a.run.app/api/events?start=2024-02-10T00:00:00-08:00&end=2024-02-11T00:00:00-08:00" hx-swap="outerHTML">
+    Events
   </button>
+  <button hx-get="https://api-bikzyn25da-uw.a.run.app/api/events?start=2024-02-10T00:00:00-08:00&end=2024-02-11T00:00:00-08:00" hx-swap="outerHTML">
+    Avail
+  </button>
+</body>
 </body>

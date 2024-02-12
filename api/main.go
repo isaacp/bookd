@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/isaacp/bookd/routes"
+	"github.com/isaacp/bookd/api/routes"
 )
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 	// }))
 
 	public := r.Group("/api")
+	//public.Use(CORSMiddleware())
 	public.GET("/", version)
 
 	initializePaths(public, routes.Availbility)

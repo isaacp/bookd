@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/isaacp/bookd/entities"
+	"github.com/isaacp/bookd/api/core/entities"
 )
 
 func InflateCalendars(file string, calendars *[]entities.Calendar) {

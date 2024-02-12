@@ -7,14 +7,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/isaacp/bookd/entities"
-	"github.com/isaacp/bookd/handlers"
+	"github.com/isaacp/bookd/api/core/entities"
 	"github.com/isaacp/collections/stack"
 )
 
 func List(c *gin.Context) {
-	calendars := make([]entities.Calendar, 0)
-	handlers.InflateCalendars("calendars.json", &calendars)
+	manager := entities.CalendarManager{}
+	calendars := manager.GetCalendars()
 	eventFilter := make(map[string]bool)
 
 	events := make([]entities.Event, 0)

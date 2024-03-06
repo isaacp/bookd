@@ -1,0 +1,19 @@
+package views
+
+import (
+    "strings"
+    "github.com/isaacp/bookd/api/core/entities"
+)
+
+templ Events(name string, events []entities.Event){
+    <h1>{name}</h1>
+    for _, event := range events {
+        <div>
+            {event.Id}<br/>
+            {event.Summary}<br/>
+            {strings.ReplaceAll(event.Location, "\\,", ",")}<br/>
+            {event.Start.String()}<br/>
+            <br/>
+        </div>
+    }
+}

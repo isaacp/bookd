@@ -1,0 +1,14 @@
+package views
+
+import (
+    "github.com/isaacp/bookd/api/core/entities"
+)
+
+templ Avail(name string, intervals []entities.Interval){
+    <h1>{name}</h1>
+    <ul>
+    for _, interval := range intervals {
+        <li>{interval.Begin.String()} - {interval.End.String()}</li>
+    }
+    </ul>
+}

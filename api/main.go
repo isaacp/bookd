@@ -5,32 +5,35 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/isaacp/bookd/api/core/entities"
 	"github.com/isaacp/bookd/api/routes"
+	"github.com/isaacp/bookd/api/views"
 )
 
 func main() {
 	os.Setenv("PORT", "8080")
+	server := gin.Default()
+	server.Use(CORSMiddleware())
 
-	r := gin.Default()
-	r.Use(CORSMiddleware())
-	//r.Use(cors.Default())
-	// r.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     []string{"*"},
-	// 	AllowMethods:     []string{"*"},
-	// 	AllowHeaders:     []string{"*"},
-	// 	ExposeHeaders:    []string{"Content-Length"},
-	// 	AllowCredentials: true,
-	// 	MaxAge:           12 * time.Hour,
-	// }))
+	server.GET("/avail", func(c *gin.Context) {
+		manager := entities.CalendarManager{}
+		freeIntervals := manager.FreeIntervals(c.Query("start"), c.Query("end"))
+		views.Avail("Availability", freeIntervals).Render(c, c.Writer)
+	})
 
-	public := r.Group("/api")
-	//public.Use(CORSMiddleware())
+	server.GET("/events", func(c *gin.Context) {
+		manager := entities.CalendarManager{}
+		events := manager.Events(c.Query("start"), c.Query("end"))
+		views.Events("Events", events).Render(c, c.Writer)
+	})
+
+	public := server.Group("/api")
 	public.GET("/", version)
 
 	initializePaths(public, routes.Availbility)
 	initializePaths(public, routes.Events)
 
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	server.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 func CORSMiddleware() gin.HandlerFunc {

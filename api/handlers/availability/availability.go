@@ -2,76 +2,14 @@ package availability
 
 import (
 	"net/http"
-	"sort"
-	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/isaacp/bookd/api/core/entities"
-	"github.com/isaacp/collections/stack"
 )
 
 func List(c *gin.Context) {
 	manager := entities.CalendarManager{}
-	calendars := manager.GetCalendars()
-	eventFilter := make(map[string]bool)
-
-	events := make([]entities.Event, 0)
-
-	begin, _ := time.Parse(time.RFC3339, c.Query("start"))
-	end, _ := time.Parse(time.RFC3339, c.Query("end"))
-
-	for _, c := range calendars {
-		for _, event := range c.Events {
-			if !strings.Contains(strings.ToLower(event.Summary), "[canceled]") && !eventFilter[event.Id] && ((event.Start.After(begin) && event.Start.Before(end)) || (event.Start.Before(begin) && event.End.After(begin)) || (event.Start.Before(end) && event.End.After(end))) {
-				events = append(events, *event)
-				eventFilter[event.Id] = true
-			}
-		}
-	}
-
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].Start.Before(events[j].Start)
-	})
-
-	intervals := stack.NewStack[entities.Interval]()
-
-	for _, event := range events {
-		if intervals.IsEmpty() {
-			intervals.Push(event.Interval())
-			continue
-		}
-
-		top, _ := intervals.Peek()
-		if event.Interval().Overlapping(*top) {
-			merged := event.Interval().MergeWith(*top)
-			intervals.Pop()
-			intervals.Push(merged)
-		} else {
-			intervals.Push(event.Interval())
-		}
-	}
-
-	start := begin
-	finish := end
-	freeIntervals := make([]entities.Interval, 0)
-	intervalSlice := intervals.ToSlice()
-
-	for index, interval := range intervalSlice {
-		freeIntervals = append(freeIntervals, entities.Interval{
-			Begin: start,
-			End:   interval.Begin,
-		})
-
-		if index == len(intervalSlice)-1 {
-			freeIntervals = append(freeIntervals, entities.Interval{
-				Begin: interval.End,
-				End:   finish,
-			})
-		} else {
-			start = interval.End
-		}
-	}
+	freeIntervals := manager.FreeIntervals(c.Query("start"), c.Query("end"))
 
 	c.JSON(http.StatusOK, freeIntervals)
 }

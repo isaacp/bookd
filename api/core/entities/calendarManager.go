@@ -1,5 +1,14 @@
 package entities
 
+import (
+	"sort"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/isaacp/collections/stack"
+)
+
 type (
 	CalendarManager struct {
 	}
@@ -44,9 +53,105 @@ func (cm *CalendarManager) GetCalendars() []Calendar {
 		},
 	}
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(calendars))
 	for index, calendar := range calendars {
-		calendars[index] = *calendar.Process()
+		go func(ndx int, cal Calendar) {
+			defer wg.Done()
+			calendars[ndx] = *cal.Process()
+		}(index, calendar)
 	}
+	wg.Wait()
 
 	return calendars
+}
+
+func (cm *CalendarManager) FreeIntervals(_start, _finish string) []Interval {
+	calendars := cm.GetCalendars()
+	eventFilter := make(map[string]bool)
+
+	events := make([]Event, 0)
+
+	begin, _ := time.Parse(time.RFC3339, _start)
+	end, _ := time.Parse(time.RFC3339, _finish)
+
+	for _, c := range calendars {
+		for _, event := range c.Events {
+			if !strings.Contains(strings.ToLower(event.Summary), "[canceled]") && !eventFilter[event.Id] && ((event.Start.After(begin) && event.Start.Before(end)) || (event.Start.Before(begin) && event.End.After(begin)) || (event.Start.Before(end) && event.End.After(end))) {
+				events = append(events, *event)
+				eventFilter[event.Id] = true
+			}
+		}
+	}
+
+	sort.Slice(events, func(i, j int) bool {
+		return events[i].Start.Before(events[j].Start)
+	})
+
+	intervals := stack.NewStack[Interval]()
+
+	for _, event := range events {
+		if intervals.IsEmpty() {
+			intervals.Push(event.Interval())
+			continue
+		}
+
+		top, _ := intervals.Peek()
+		if event.Interval().Overlapping(*top) {
+			merged := event.Interval().MergeWith(*top)
+			intervals.Pop()
+			intervals.Push(merged)
+		} else {
+			intervals.Push(event.Interval())
+		}
+	}
+
+	start := begin
+	finish := end
+	freeIntervals := make([]Interval, 0)
+	intervalSlice := intervals.ToSlice()
+
+	for index, interval := range intervalSlice {
+		freeIntervals = append(freeIntervals, Interval{
+			Begin: start,
+			End:   interval.Begin,
+		})
+
+		if index == len(intervalSlice)-1 {
+			freeIntervals = append(freeIntervals, Interval{
+				Begin: interval.End,
+				End:   finish,
+			})
+		} else {
+			start = interval.End
+		}
+	}
+
+	return freeIntervals
+}
+
+func (cm *CalendarManager) Events(_start, _finish string) []Event {
+	calendars := cm.GetCalendars()
+	eventFilter := make(map[string]bool)
+
+	events := make([]Event, 0)
+
+	begin, _ := time.Parse(time.RFC3339, _start)
+	end, _ := time.Parse(time.RFC3339, _finish)
+
+	for _, c := range calendars {
+		for _, event := range c.Events {
+			if !strings.Contains(strings.ToLower(event.Summary), "[canceled]") && !eventFilter[event.Id] && ((event.Start.After(begin) && event.Start.Before(end)) || (event.Start.Before(begin) && event.End.After(begin)) || (event.Start.Before(end) && event.End.After(end))) {
+				events = append(events, *event)
+				eventFilter[event.Id] = true
+			}
+		}
+	}
+
+	sort.Slice(events, func(i, j int) bool {
+		return events[i].Start.Before(events[j].Start)
+	})
+
+	return events
+
 }
